@@ -1,6 +1,9 @@
+import 'dart:html';
+
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import './models/data.dart' as lib;
+import './models/enums.dart' as val;
 
 void main() {
   runApp(MainApp());
@@ -29,6 +32,18 @@ class _MainState extends State<Main> {
     'Jedi Order',
   ];
 
+  List<dynamic> characters = lib.characters;
+
+  void editList() {
+    if (dropdownvalue != 'All') {
+      for (int i = 0; i < characters.length - 1; i++) {
+        if (!characters[i]['affiliations'].contains('dropdownvalue')) {
+          characters[i].remove;
+        }
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -54,17 +69,18 @@ class _MainState extends State<Main> {
               onChanged: (String? newValue) {
                 setState(() {
                   dropdownvalue = newValue!;
+                  editList();
                 });
               },
               isExpanded: true,
             ),
             const Text(
-              "There are 5 characters",
+              "There are * characters",
               textAlign: TextAlign.center,
             ),
             Expanded(
               child: ListView.builder(
-                itemCount: lib.characters.length,
+                itemCount: characters.length,
                 itemBuilder: (BuildContext ctxt, int index) {
                   return Padding(
                       padding: EdgeInsets.all(5.0),
@@ -72,7 +88,7 @@ class _MainState extends State<Main> {
                         children: [
                           CachedNetworkImage(
                             imageUrl:
-                                "https://picsum.photos/200?image=${lib.characters[index]['id']}",
+                                "https://picsum.photos/200?image=${characters[index]['id']}",
                             progressIndicatorBuilder:
                                 (context, url, downloadProgress) =>
                                     CircularProgressIndicator(
@@ -80,7 +96,7 @@ class _MainState extends State<Main> {
                             errorWidget: (context, url, error) =>
                                 Icon(Icons.error),
                           ),
-                          Text("${lib.characters[index]['name']}")
+                          Text("${characters[index]['name']}")
                         ],
                       ));
                 },
