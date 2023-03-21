@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import './models/enums.dart' as lib;
+import 'package:cached_network_image/cached_network_image.dart';
+import './models/data.dart' as lib;
 
 void main() {
   runApp(MainApp());
@@ -33,12 +34,12 @@ class _MainState extends State<Main> {
     return Scaffold(
         appBar: AppBar(
           centerTitle: true,
-          title: Text("Star Wars Characters"),
+          title: const Text("Star Wars Characters"),
         ),
         body: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Text(
+            const Text(
               "Select a side:",
               textAlign: TextAlign.left,
             ),
@@ -57,9 +58,33 @@ class _MainState extends State<Main> {
               },
               isExpanded: true,
             ),
-            Text(
+            const Text(
               "There are 5 characters",
               textAlign: TextAlign.center,
+            ),
+            Expanded(
+              child: ListView.builder(
+                itemCount: lib.characters.length,
+                itemBuilder: (BuildContext ctxt, int index) {
+                  return Padding(
+                      padding: EdgeInsets.all(5.0),
+                      child: Row(
+                        children: [
+                          CachedNetworkImage(
+                            imageUrl:
+                                "https://picsum.photos/200?image=${lib.characters[index]['id']}",
+                            progressIndicatorBuilder:
+                                (context, url, downloadProgress) =>
+                                    CircularProgressIndicator(
+                                        value: downloadProgress.progress),
+                            errorWidget: (context, url, error) =>
+                                Icon(Icons.error),
+                          ),
+                          Text("${lib.characters[index]['name']}")
+                        ],
+                      ));
+                },
+              ),
             ),
           ],
         ));
